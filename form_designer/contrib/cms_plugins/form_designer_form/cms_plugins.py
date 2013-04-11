@@ -17,16 +17,32 @@ class FormDesignerPlugin(CMSPluginBase):
     name = _('Form')
     admin_preview = False
     text_enabled=True
+
     def render(self, context, instance, placeholder):
-        if instance.form_definition.form_template_name:
-            self.render_template = instance.form_definition.form_template_name
-        else:
-            self.render_template = settings.DEFAULT_FORM_TEMPLATE
+        
+        # the form renders to plugin_detail.html, which then uses 
+        # {% include form_render_template %}
+        form_render_template = instance.form_definition.form_template_name or settings.DEFAULT_FORM_TEMPLATE
+
+        context.update({
+            'form_render_template':form_render_template,
+            })
+
+        self.render_template = "html/formdefinition/plugin_detail.html"
 
         disable_redirection = 'form_designer.middleware.RedirectMiddleware' not in django_settings.MIDDLEWARE_CLASSES
-        response = process_form(context['request'], instance.form_definition, context, disable_redirection=disable_redirection)
+
+        response = process_form(
+            context['request'], 
+            instance.form_definition, 
+            context, 
+            disable_redirection=disable_redirection
+            )
         if isinstance(response, HttpResponseRedirect):
-            raise HttpRedirectException(response, "Redirect")
+            raise HttpRedirectException(
+                response, 
+                "Redirect"
+                )
         return response
 
 
