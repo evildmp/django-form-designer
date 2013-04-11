@@ -89,7 +89,8 @@ def _form_detail_view(request, form_definition):
     return render_to_response('html/formdefinition/detail.html', result,
         context_instance=RequestContext(request))
 
-def detail(request, object_name):
+def detail(request, object_name):  
+    print "in detail"
     form_definition = get_object_or_404(FormDefinition, name=object_name, require_hash=False)
     return _form_detail_view(request, form_definition) 
 
