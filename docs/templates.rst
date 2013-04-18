@@ -2,6 +2,17 @@
 Templates
 #########
 
+Note that many of the templates provided are simply there to give you the bare
+functionality to get started. 
+
+For example, the ``detail.html`` and ``plugin_detail`` templates place the
+form's ``title`` in an ``<h2>``; this is unlikely to be exactly what you need.
+
+Put any such templates that you want to override into your project's
+``templates`` directory, and edit them there, rather than edit the ones in the
+application.
+
+
 Form template
 =============
 
@@ -24,16 +35,19 @@ Unless you're using django CMS plugins to deliver your forms, you'll need to
 override ``html/formdefinition/detail.html`` so that the forms Django Form
 Designer publishes match your site's page structure and appearance.
 
-Heading levels
-==============
+Handling messages
+-----------------
 
-The provided ``detail.html`` and ``plugin_detail`` templates place the form's
-``title`` in an HTML heading.
+You should also make sure that your site's base templates are able to handle
+the messages created by Django Form Designer.
 
-This defaults to ``<h2>``. However, if the context variable
-``body_heading_level`` (i.e., a level for headings in the body of the page,
-rather than those reserved for page titles and other purposes) is set, it will
-use that.
+The provided ``html/formdefinition/base.html`` shows one way to do this. 
 
-A convenient way to do this is to use ``{% with body_heading_level=2 %}`` and
-``{% endwith %}`` around the main body section of your site's base template.'
+There is currently an issue in the system that means messages will not be displayed correctly when using plugin forms, unless:
+
+* the form has the ``HTTP redirect after successful submission`` option
+  enabled
+* ``form_designer.middleware.RedirectMiddleware`` is enabled in
+  ``settings.MIDDLEWARE_CLASSES``
+  
+See: https://github.com/Raumkraut/django-form-designer/issues/7
